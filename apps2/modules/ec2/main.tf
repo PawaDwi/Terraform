@@ -1,31 +1,3 @@
-# resource "aws_iam_policy" "example_policy" {
-#   name   = "example-policy"
-#   policy = <<EOF
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Sid": "ACMPermissions",
-#       "Effect": "Allow",
-#       "Action": [
-#         "acm:RequestCertificate",
-#         "acm:DescribeCertificate",
-#         "acm:GetCertificate"
-#       ],
-#       "Resource": "*"
-#     }
-#   ]
-# }
-# EOF
-# }
-
-# resource "aws_iam_user_policy_attachment" "example_attachment" {
-#   user       = "terrafrom_user"
-#   policy_arn = aws_iam_policy.example_policy.arn
-# }
-
-
-
 data "terraform_remote_state" "security" {
   backend = "local"
   config = {
