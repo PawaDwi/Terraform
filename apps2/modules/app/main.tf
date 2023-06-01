@@ -183,7 +183,7 @@ resource "aws_instance" "example" {
       #   "sudo systemctl enable nginx",
       #   "sudo systemctl start nginx",
       #   "sudo systemctl stop nginx", # Stop Nginx temporarily for Certbot configuration
-      #   #"sudo sed -i 's/80 default_server/80 default_server;\\n\\treturn 301 https:\\/\\/$host$request_uri/' /etc/nginx/sites-available/default",
+      #   #   "sudo sed -i 's/80 default_server/80 default_server;\\n\\treturn 301 https:\\/\\/$host$request_uri/' /etc/nginx/sites-available/default",
       #   "sudo sed -i 's/80 default_server/80 default_server;\\n\\tlisten 443 ssl;\\n\\tssl_certificate \\/etc\\/ssl\\/certs\\/ssl_certificate.crt\\n\\tssl_certificate_key \\/etc\\/ssl\\/private\\/ssl_private_key.key\\n/' /etc/nginx/sites-available/default",
       #   "sudo systemctl start nginx",
       #   "sudo apt-get install -y certbot python3-certbot-nginx",
@@ -243,17 +243,17 @@ resource "aws_instance" "example" {
       private_key = tls_private_key.example.private_key_pem
     }
   }
-  #   provisioner "file" {
-  #     content     = tls_private_key.example.private_key_pem
-  #     destination = "/home/ubuntu/.ssh/id_rsa"
+#   provisioner "file" {
+#     content     = tls_private_key.example.private_key_pem
+#     destination = "/home/ubuntu/.ssh/id_rsa"
 
-  #     connection {
-  #       type        = "ssh"
-  #       user        = "ubuntu"
-  #       host        = aws_instance.example.public_ip
-  #       private_key = tls_private_key.example.private_key_pem
-  #     }
-  #   }
+#     connection {
+#       type        = "ssh"
+#       user        = "ubuntu"
+#       host        = aws_instance.example.public_ip
+#       private_key = tls_private_key.example.private_key_pem
+#     }
+#   }
 }
 
 # resource "null_resource" "certbot" {

@@ -46,10 +46,9 @@ These are the general steps to implement Terraform in a NestJS project. However,
 | | +--------------+ | |
 | | | development/ | | |
 | | |              | | |
-| | | ec2     | | |
-| | | rds | | |
-| | 
-+--------------+ | |
+| | | main.tf      | | |
+| | | variables.tf | | |
+| | +--------------+ | |
 | |                  | |
 | | +----------+     | |
 | | | staging/ |     | |

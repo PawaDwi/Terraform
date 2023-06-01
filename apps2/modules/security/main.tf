@@ -59,28 +59,12 @@ resource "aws_security_group" "example" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   ingress {
     from_port   = 5432 # Allow PostgreSQL connections
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
 
   ingress {
     from_port   = -1 # Allow all traffic using the ICMP protocol
@@ -109,23 +93,23 @@ resource "aws_security_group" "example" {
   }
 }
 
-# resource "aws_security_group_rule" "example_http_ingress" {
-#   type              = "ingress"
-#   from_port         = 80
-#   to_port           = 80
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.example.id
-# }
+resource "aws_security_group_rule" "example_http_ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.example.id
+}
 
-# resource "aws_security_group_rule" "example_https_ingress" {
-#   type              = "ingress"
-#   from_port         = 443
-#   to_port           = 443
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.example.id
-# }
+resource "aws_security_group_rule" "example_https_ingress" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.example.id
+}
 
 # Create DB parameter group
 resource "aws_db_parameter_group" "example" {

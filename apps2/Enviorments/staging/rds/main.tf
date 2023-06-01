@@ -5,8 +5,7 @@ terraform {
 }
 
 module "rds" {
-  source      = "../../../modules/rds/"
-  environment = var.environment
+  source = "../../../modules/rds/"
 }
 
 

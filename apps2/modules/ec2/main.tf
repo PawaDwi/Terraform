@@ -1,22 +1,15 @@
+
 data "terraform_remote_state" "security" {
   backend = "local"
   config = {
-    path = "../../../Enviorments/${var.environment}/security/state.tfstate"
+    path = "../../../Enviorments/staging/security/state.tfstate"
   }
 }
 
 data "terraform_remote_state" "rds" {
   backend = "local"
   config = {
-    path = "../../../Enviorments/${var.environment}/rds/state.tfstate"
-  }
-}
-
-
-data "terraform_remote_state" "eip" {
-  backend = "local"
-  config = {
-    path = "../../../Enviorments/${var.environment}/eip/state.tfstate"
+    path = "../../../Enviorments/staging/rds/state.tfstate"
   }
 }
 
@@ -59,30 +52,20 @@ resource "aws_instance" "example" {
       "curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -",
       "echo deb https://dl.yarnpkg.com/debian/ stable main | sudo tee /etc/apt/sources.list.d/yarn.list",
       "sudo apt-get update && sudo apt-get install yarn",
-      #---nginx setup----
-      "sudo apt install nginx -y",
-      #  "sudo ufw allow 'Nginx Full",
-      #  "sudo ufw enable",
-      # "echo 'y' | sudo ufw allow 'Nginx Full'",
-      # "echo 'y' | sudo ufw enable",
-      "sudo systemctl enable nginx",
-      "sudo systemctl start nginx",
-      "sudo apt-get install -y certbot python3-certbot-nginx",
-      "sudo nginx -t",
       "sudo yarn install -g n",
       "sudo npm install pm2 -g",
       "sudo n latest",
-      "git clone https://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@github.com/redutech/streaky.git",
+      "git clone https://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@github.com/redutech/streaky.git",
       "cd streaky",
       "yarn install",
       "cd apps/api",
       "sudo npm install -g env-cmd",
       "touch .dev.env",
       "touch .env",
-      "echo '\nDB_HOST=${local.endpoint_without_port}' >> .env && echo '\nDB_HOST=${local.endpoint_without_port}' >> .dev.env",
+      "echo 'DB_HOST=${local.endpoint_without_port}' >> .env && echo 'DB_HOST=${local.endpoint_without_port}' >> .dev.env",
       "echo 'DB_PORT=5432' >> .env && echo 'DB_PORT=5432' >> .dev.env",
       "echo 'DB_USER=postgres' >> .env && echo 'DB_USER=postgres' >> .dev.env",
-      "echo 'DB_PASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password}' >> .env && echo  'DB_PASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password}' >> .dev.env",
+      "echo 'DB_PASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password}' >> .env && echo 'DB_PASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password}' >> .dev.env",
       "echo 'DB_DATABASE=streaky' >> .env && echo 'DB_DATABASE=streaky' >> .dev.env",
       "echo 'AUTO_LOAD_MODEL=false' >> .env && echo 'AUTO_LOAD_MODEL=false' >> .dev.env",
       "echo 'SEND_OTP=false' >> .env && echo 'SEND_OTP=false' >> .dev.env",
@@ -99,12 +82,13 @@ resource "aws_instance" "example" {
       "sudo apt install postgresql-client -y",
       "PGPASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password} psql -h ${local.endpoint_without_port} -U ${data.terraform_remote_state.rds.outputs.rds_username} -c 'CREATE DATABASE streaky'",
       "PGPASSWORD=${data.terraform_remote_state.rds.outputs.aws_db_password} psql -h ${local.endpoint_without_port} -U postgres -d streaky -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'",
-      "cd streaky",
+      "cd streaky/apps/api",
+      "npx sequelize-cli db:seed --debug --seed  20220722163046-classes.js",
+       "cd ../../",
       "npm run build",
       "cd dist/apps/api && pm2 start npm --name streaky-api -- run start:dev",
       "sudo pm2 save",
-      "pm2 start streaky-api",
-
+      "pm2 start streaky-api"
     ]
 
     connection {
@@ -114,7 +98,6 @@ resource "aws_instance" "example" {
       private_key = tls_private_key.example.private_key_pem
       timeout     = "2m"
     }
-
   }
 
   lifecycle {
@@ -129,12 +112,14 @@ resource "aws_instance" "example" {
   }
 }
 
-resource "aws_eip_association" "example" {
-  instance_id   = aws_instance.example.id
-  allocation_id = data.terraform_remote_state.eip.outputs.elastic_ip
+resource "aws_eip" "example" {
+  instance = aws_instance.example.id
 }
 
-
+resource "aws_eip_association" "example" {
+  instance_id   = aws_instance.example.id
+  allocation_id = aws_eip.example.id
+}
 
 locals {
   endpoint_parts        = split(":", data.terraform_remote_state.rds.outputs.database_endpoint)

@@ -1,14 +1,14 @@
 data "terraform_remote_state" "security" {
   backend = "local"
   config = {
-    path = "../../../Enviorments/${var.environment}/security/state.tfstate"
+    path = "../../../Enviorments/staging/security/state.tfstate"
   }
 }
 resource "aws_db_instance" "example" {
   identifier              = "example-rds-instance"
   engine                  = "postgres"
   username                = "postgres"
-  password                = "MarsRover#9899"
+  password                = "MarsRover9899"
   engine_version          = "12.7"
   instance_class          = "db.t3.micro"
   allocated_storage       = 20

@@ -5,8 +5,8 @@ terraform {
 }
 
 module "security" {
-  source      = "../../../modules/security"
- 
+  source = "../../../modules/security"
+
 }
 
 output "aws_db_subnet_group_name" {
